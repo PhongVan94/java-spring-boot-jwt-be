@@ -25,9 +25,10 @@ public class SecurityConfiguration {
                         .disable() // Disable CSRF protection
                 )
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                                .requestMatchers("/backend/**").permitAll()
                                 .requestMatchers("/api/v1/auth/**").permitAll()
-                                .anyRequest().hasAuthority("ADMIN")
-//                                .anyRequest().authenticated()
+//                                .anyRequest().hasAuthority("ADMIN")
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
