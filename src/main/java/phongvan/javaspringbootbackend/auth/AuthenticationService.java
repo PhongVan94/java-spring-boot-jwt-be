@@ -1,5 +1,6 @@
 package phongvan.javaspringbootbackend.auth;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,10 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import phongvan.javaspringbootbackend.config.JwtService;
 import phongvan.javaspringbootbackend.entity.Group;
+import phongvan.javaspringbootbackend.entity.Role;
 import phongvan.javaspringbootbackend.entity.User;
 import phongvan.javaspringbootbackend.repository.GroupRepository;
+import phongvan.javaspringbootbackend.repository.RoleRepository;
 import phongvan.javaspringbootbackend.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +25,7 @@ import java.util.Map;
 public class AuthenticationService {
     private final UserRepository repository;
     private final GroupRepository groupRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -46,9 +51,16 @@ public class AuthenticationService {
                         .DT("email")
                         .build();
             }
-            var group = groupRepository.findByName("USER")
+            var group = groupRepository.findByName("GUEST")
                     .orElse(Group.builder()
-                            .name("USER")
+                            .name("GUEST")
+                            .roles(Collections.singletonList(
+                                    Role
+                                            .builder()
+                                            .name("USER")
+                                            .description("Basic role for user")
+                                            .build()
+                            ))
                             .build()
                     );
 
@@ -79,9 +91,8 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         String valueLogin = request.getValueLogin();
-        System.out.println(valueLogin);
         String password = request.getPassword();
-        System.out.println(password);
+
         try {
             boolean userExists = repository.findByEmail(valueLogin)
                     .or(() -> repository.findByPhone(valueLogin))
@@ -130,7 +141,6 @@ public class AuthenticationService {
                     .build();
         }
 
-
-
     }
+
 }

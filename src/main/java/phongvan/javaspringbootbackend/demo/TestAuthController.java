@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestAuthController {
 
     @GetMapping("/userProfile")
-    @PreAuthorize("hasAuthority('GUEST')")
+    @PreAuthorize("hasAuthority('USER')")
     public String userProfile() {
         return "Welcome to User Profile";
     }

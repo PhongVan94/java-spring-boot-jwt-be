@@ -16,6 +16,6 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String url;
+    private String name;
     private String description;
 }
