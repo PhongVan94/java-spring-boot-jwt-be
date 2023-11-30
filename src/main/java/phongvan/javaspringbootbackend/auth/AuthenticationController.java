@@ -1,5 +1,7 @@
 package phongvan.javaspringbootbackend.auth;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,9 +23,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<AuthenticationResponse> login(
+            @RequestBody AuthenticationRequest request,
+            HttpServletResponse response
     ){
+        String cookieToken = service.authenticate(request).getToken();
+        response.addCookie(new Cookie("jwt",cookieToken));
+
         return ResponseEntity.ok(service.authenticate(request));
     }
 }

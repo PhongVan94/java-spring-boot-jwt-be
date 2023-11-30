@@ -2,10 +2,7 @@ package phongvan.javaspringbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Collection;
 
@@ -32,7 +29,6 @@ public class Group {
             joinColumns = @JoinColumn(name = "_group_id"),
             inverseJoinColumns = @JoinColumn(name = "_role_id")
     )
-
     private Collection<Role> roles;
 
 }
