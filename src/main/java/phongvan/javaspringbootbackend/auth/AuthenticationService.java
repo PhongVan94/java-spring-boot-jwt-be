@@ -1,6 +1,5 @@
 package phongvan.javaspringbootbackend.auth;
 
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +13,7 @@ import phongvan.javaspringbootbackend.entity.User;
 import phongvan.javaspringbootbackend.repository.GroupRepository;
 import phongvan.javaspringbootbackend.repository.RoleRepository;
 import phongvan.javaspringbootbackend.repository.UserRepository;
+import phongvan.javaspringbootbackend.rest.Response;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class AuthenticationService {
                 return AuthenticationResponse.builder()
                         .EC(-1)
                         .EM("THE PHONE NUMBER IS ALREADY EXIST")
-                        .DT("email")
+                        .DT("phone")
                         .build();
             }
             var group = groupRepository.findByName("GUEST")
@@ -103,7 +103,7 @@ public class AuthenticationService {
                         .EC(-1)
                         .EM("YOUR EMAIL/PHONE NUMBER OR PASSWORD IS INCORRECT")
                         .build();
-            }else {
+            } else {
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
                                 valueLogin,
@@ -118,7 +118,7 @@ public class AuthenticationService {
                 Map<String, Object> data = new HashMap<>();
                 data.put("firstname", user.getFirstname());
                 data.put("lastname", user.getLastname());
-                data.put("phone",user.getPhone());
+                data.put("phone", user.getPhone());
                 data.put("email", user.getEmail());
                 data.put("group", user.getGroup());
                 data.put("token", jwtToken);
@@ -141,6 +141,20 @@ public class AuthenticationService {
                     .build();
         }
 
+    }
+
+    public Response logout() {
+        try {
+            return Response.builder()
+                    .EC(0)
+                    .EM("LOGOUT SUCCESSFUL")
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .EC(-1)
+                    .EM("SOMETHING WENT WRONG IN SERVER")
+                    .build();
+        }
     }
 
 }

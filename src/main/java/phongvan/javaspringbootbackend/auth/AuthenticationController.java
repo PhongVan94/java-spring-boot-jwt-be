@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import phongvan.javaspringbootbackend.rest.Response;
 
 
 @RestController
@@ -47,13 +48,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletResponse response) {
+    public ResponseEntity<Response> logout(HttpServletResponse response) {
 
         Cookie cookie = new Cookie("jwt", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
-
-        return ResponseEntity.ok("Logout successful");
+        return ResponseEntity.ok(service.logout());
     }
 }

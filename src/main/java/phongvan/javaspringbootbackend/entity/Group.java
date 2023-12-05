@@ -1,6 +1,7 @@
 package phongvan.javaspringbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,11 +20,23 @@ public class Group {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToMany(mappedBy = "group",
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH
+            })
+    @JsonManagedReference
     private Collection<User> users;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH
+            })
     @JoinTable(
             name = "_group_role",
             joinColumns = @JoinColumn(name = "_group_id"),

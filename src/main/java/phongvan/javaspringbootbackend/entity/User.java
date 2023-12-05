@@ -1,5 +1,6 @@
 package phongvan.javaspringbootbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,12 +40,24 @@ public class User implements UserDetails {
 
     private String gender;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {
+            CascadeType.MERGE,
+            CascadeType.DETACH,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+
+    })
     @JoinColumn(name = "_group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH
+            })
     @JoinTable(name = "_project_user", joinColumns = @JoinColumn(name = "_user_id"), inverseJoinColumns = @JoinColumn(name = "_project_id"))
 
     private Collection<Project> projects;
