@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAnyAuthority('USER')")
 public class UserApiController {
 
     private final UserApiService service;
@@ -29,10 +29,12 @@ public class UserApiController {
         return ResponseEntity.ok(service.createUser(userRequest));
     }
     @PutMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Response> updateUser(@RequestBody UserRequest userRequest){
         return ResponseEntity.ok(service.updateUser(userRequest));
     }
     @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Response> deleteUser(@PathVariable int id){
         return ResponseEntity.ok(service.deleteUser(id));
     }

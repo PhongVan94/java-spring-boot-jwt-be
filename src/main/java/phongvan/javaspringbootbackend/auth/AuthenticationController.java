@@ -39,7 +39,7 @@ public class AuthenticationController {
     ) {
         String cookieToken = service.authenticate(request).getToken();
         Cookie cookie = new Cookie("jwt", cookieToken);
-        cookie.setMaxAge(60 * 60); // 1 hour
+        cookie.setMaxAge(60 * 60* 60); // 1 hour
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);

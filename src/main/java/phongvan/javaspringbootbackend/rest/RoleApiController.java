@@ -12,7 +12,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/role")
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAnyAuthority('USER')")
 public class RoleApiController {
 
     private final RoleApiService service;
@@ -36,8 +36,9 @@ public class RoleApiController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Response> deleteRole(@RequestBody Role role){
-        return ResponseEntity.ok(service.deleteRole(role));
+    public ResponseEntity<Response> deleteRole(@RequestBody Map<String,Integer> request){
+
+        return ResponseEntity.ok(service.deleteRole(request));
     }
 
 }

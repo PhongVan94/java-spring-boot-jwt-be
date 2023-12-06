@@ -1,6 +1,7 @@
 package phongvan.javaspringbootbackend.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,7 @@ public class RoleApiService {
 
     public Response getAllRole() {
         try {
-            List<Role> roles = roleRepository.findAll();
+            List<Role> roles = roleRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
             if (roles.isEmpty()) {
                 return Response.builder()
                         .EC(-1)
@@ -135,15 +136,11 @@ public class RoleApiService {
     }
 
 
-    public Response deleteRole(@RequestBody Role role) {
+    public Response deleteRole(Map<String, Integer> request) {
         try {
-            Role roleToDelete = roleRepository.findByName(role.getName());
-            if (roleToDelete == null) {
-                return Response.builder()
-                        .EC(0)
-                        .EM("NOTHING ROLE TO DELETE")
-                        .build();
-            }
+
+            Role roleToDelete = roleRepository.getById(request.get("id"));
+
             Collection<Group> groups = groupRepository.findAll();
             for (Group group : groups) {
                 Collection<Role> roleGroup = group.getRoles();

@@ -27,7 +27,7 @@ public class Group {
                     CascadeType.PERSIST,
                     CascadeType.REFRESH
             })
-    @JsonManagedReference
+    @JsonBackReference
     private Collection<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER,

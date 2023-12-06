@@ -4,6 +4,7 @@ package phongvan.javaspringbootbackend.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,13 @@ public class UserApiService {
     private final GroupRepository groupRepository;
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAll((Sort.by(Sort.Direction.DESC, "id")));
     }
 
     public Response getUserWithPagination(@RequestParam int page, @RequestParam int limit) {
         List<User> users = null;
         try {
-            PageRequest pageRequest = PageRequest.of(page, limit);
+            PageRequest pageRequest = PageRequest.of(page, limit,Sort.by(Sort.Direction.DESC, "id"));
             Page<User> userPage = userRepository.findAll(pageRequest);
             users = userPage.getContent();
 

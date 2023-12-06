@@ -48,7 +48,7 @@ public class User implements UserDetails {
 
     })
     @JoinColumn(name = "_group_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Group group;
 
     @ManyToMany(fetch = FetchType.EAGER,

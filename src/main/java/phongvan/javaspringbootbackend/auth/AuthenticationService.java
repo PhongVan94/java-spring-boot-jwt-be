@@ -54,6 +54,7 @@ public class AuthenticationService {
             var group = groupRepository.findByName("GUEST")
                     .orElse(Group.builder()
                             .name("GUEST")
+                            .description("Basic user")
                             .roles(Collections.singletonList(
                                     Role
                                             .builder()

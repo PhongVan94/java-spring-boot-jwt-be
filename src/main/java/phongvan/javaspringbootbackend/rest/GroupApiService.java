@@ -1,32 +1,30 @@
 package phongvan.javaspringbootbackend.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import phongvan.javaspringbootbackend.entity.Group;
 import phongvan.javaspringbootbackend.entity.Role;
 import phongvan.javaspringbootbackend.repository.GroupRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class GroupApiService {
     private final GroupRepository groupRepository;
 
-    public Response getGroupMemberList(){
+    public Response getGroupMemberList() {
         try {
-            List<Group> groups = groupRepository.findAll();
-            if (groups.isEmpty()){
+            List<Group> groups = groupRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            if (groups.isEmpty()) {
                 return Response.builder()
                         .EC(-1)
                         .EM("NOT FOUND ANY GROUP")
                         .DT(null)
                         .build();
-            }else {
+            } else {
                 return Response.builder()
                         .EC(0)
                         .EM("GET GROUP SUCCESS")
@@ -42,29 +40,36 @@ public class GroupApiService {
         }
     }
 
-    public Response createNewGroup(Collection<Group> groupList) {
+    public Response createNewGroup(Map<String, String>[] groupList) {
         try {
-            Collection<Group> groups = new ArrayList<>();
-            for (Group group : groupList) {
-                String groupName = group.getName();
-                Optional<Group> groupExists = groupRepository.findByName(groupName);
-                if (groupExists.isEmpty()) {
-                    groups.add(group);
+            Collection<Group> groupsToAdd = new ArrayList<>();
+            for (Map<String, String> groupMap : groupList) {
+                String name = groupMap.get("name");
+                String description = groupMap.get("description");
+                Group groupExists = groupRepository.getGroupByName(name);
+                if (groupExists == null) {
+                    Group groupToAdd = Group.builder()
+                            .name(name)
+                            .description(description)
+                            .build();
+                    groupsToAdd.add(groupToAdd);
                 }
             }
 
-            if (groups.isEmpty()) {
+            if (groupsToAdd.isEmpty()) {
                 return Response.builder()
                         .EC(0)
                         .EM("NOTHING TO CREATE")
                         .DT(null)
                         .build();
             }
-            groupRepository.saveAllAndFlush(groups);
+            groupRepository.saveAllAndFlush(groupsToAdd);
 
             return Response.builder()
                     .EC(0)
-                    .EM("CREATE GROUP SUCCESS: " + groups.size() + " GROUPS")
+                    .EM("CREATE GROUP SUCCESS: "
+                            + groupsToAdd.size()
+                            + " GROUPS")
                     .DT(null)
                     .build();
         } catch (Exception e) {
@@ -75,4 +80,22 @@ public class GroupApiService {
                     .build();
         }
     }
+
+    public Response deleteGroup(Map<String, Integer> request) {
+        try {
+
+            Group groupToDelete = groupRepository.getById(request.get("id"));
+            groupRepository.delete(groupToDelete);
+            return Response.builder()
+                    .EC(0)
+                    .EM("DELETE GROUP SUCCESS")
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .EC(-1)
+                    .EM("SOMETHING WENT WRONG IN SERVER")
+                    .build();
+        }
+    }
+
 }
